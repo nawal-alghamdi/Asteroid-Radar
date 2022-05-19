@@ -1,9 +1,10 @@
 package com.udacity.asteroidradar.api
 
-import retrofit2.Call
+import com.google.gson.JsonObject
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.nasa.gov/"
 
@@ -11,17 +12,17 @@ private const val BASE_URL = "https://api.nasa.gov/"
  * Use the Retrofit builder to build a retrofit object using a Scalars converter
  */
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
     .baseUrl(BASE_URL)
+    .addConverterFactory(GsonConverterFactory.create())
     .build()
 
 
 /**
- * A public interface that exposes the [getProperties] method
+ * A public interface that exposes the [getAsteroids] method
  */
 interface AsteroidApiService {
     @GET("neo/rest/v1/feed")
-    fun getProperties(): Call<String>
+    suspend fun getAsteroids(@Query("api_key") key: String): JsonObject
 }
 
 /**

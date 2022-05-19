@@ -45,6 +45,7 @@ class MainAdapter(private val onClickListener: OnClickListener) :
      */
     companion object DiffCallback : DiffUtil.ItemCallback<Asteroid>() {
         override fun areItemsTheSame(oldItem: Asteroid, newItem: Asteroid): Boolean {
+            // Which is true if the object references are the same "oldItem === newItem"
             return oldItem === newItem
         }
 
