@@ -1,18 +1,17 @@
-package com.udacity.asteroidradar.api
+package com.udacity.asteroidradar.network
 
 import com.google.gson.JsonObject
+import com.udacity.asteroidradar.util.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val BASE_URL = "https://api.nasa.gov/"
-
 /**
  * Use the Retrofit builder to build a retrofit object using a Scalars converter
  */
 private val retrofit = Retrofit.Builder()
-    .baseUrl(BASE_URL)
+    .baseUrl(Constants.BASE_URL)
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 

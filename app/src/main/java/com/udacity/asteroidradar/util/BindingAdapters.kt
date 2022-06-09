@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.udacity.asteroidradar.main.AsteroidApiStatus
+import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.main.MainAdapter
 
 @BindingAdapter("listData")
@@ -13,6 +13,14 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?) {
     //This binding adapter is to initialize the MainAdapter with list data
     val adapter = recyclerView.adapter as MainAdapter
     adapter.submitList(data)
+}
+
+/**
+ * Binding adapter used to hide the spinner once data is available
+ */
+@BindingAdapter("goneIfNotNull")
+fun goneIfNotNull(view: View, it: Any?) {
+    view.visibility = if (it != null) View.GONE else View.VISIBLE
 }
 
 @BindingAdapter("statusIcon")
@@ -51,19 +59,3 @@ fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
     textView.text = String.format(context.getString(R.string.km_s_unit_format), number)
 }
 
-@BindingAdapter("asteroidApiStatus")
-fun bindStatus(statusImageView: ImageView, status: AsteroidApiStatus?) {
-    when (status) {
-        AsteroidApiStatus.LOADING -> {
-            statusImageView.visibility = View.VISIBLE
-            statusImageView.setImageResource(R.drawable.loading_animation)
-        }
-        AsteroidApiStatus.ERROR -> {
-            statusImageView.visibility = View.VISIBLE
-            statusImageView.setImageResource(R.drawable.ic_connection_error)
-        }
-        AsteroidApiStatus.DONE -> {
-            statusImageView.visibility = View.GONE
-        }
-    }
-}
