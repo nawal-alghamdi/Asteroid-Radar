@@ -29,7 +29,7 @@ class AsteroidsRepository(private val database: AsteroidRadarDatabase) {
                 JSONObject(
                     AsteroidApi.retrofitService.getAsteroids(
                         BuildConfig.API_KEY
-                    ).toString()
+                    ).await().toString()
                 )
             )
 
