@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.BuildConfig
@@ -9,6 +10,7 @@ import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.network.AsteroidApi
 import com.udacity.asteroidradar.network.asDatabaseModel
 import com.udacity.asteroidradar.network.parseAsteroidsJsonResult
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -25,15 +27,19 @@ class AsteroidsRepository(private val database: AsteroidRadarDatabase) {
     // responsible for updating the offline cash
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
-            val asteroidsList = parseAsteroidsJsonResult(
-                JSONObject(
-                    AsteroidApi.retrofitService.getAsteroids(
-                        BuildConfig.API_KEY
-                    ).await().toString()
-                )
-            )
+            try {
+                val asteroidsList = parseAsteroidsJsonResult(
+                    JSONObject(AsteroidApi.retrofitService.getAsteroids(BuildConfig.API_KEY)
+                        .await().toString()))
 
-            database.asteroidDao.insertAll(*asteroidsList.asDatabaseModel())
+                database.asteroidDao.insertAll(*asteroidsList.asDatabaseModel())
+
+            } catch (cancellationException: CancellationException) {
+                throw cancellationException
+            } catch (e: Exception) {
+                Log.w("AsteroidsRepository", "refreshAsteroids: Exception = $e")
+            }
         }
     }
+
 }
