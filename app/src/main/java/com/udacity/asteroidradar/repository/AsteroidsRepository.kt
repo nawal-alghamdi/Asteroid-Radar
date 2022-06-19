@@ -14,12 +14,14 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 //AsteroidsRepository: responsible for providing a simple API to our data sources
 class AsteroidsRepository(private val database: AsteroidRadarDatabase) {
 
     val asteroids: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidDao.getAsteroids()) {
+        Transformations.map(database.asteroidDao.getAsteroids(getCurrentDate())) {
             it.asDomainModel()
         }
 
@@ -39,6 +41,14 @@ class AsteroidsRepository(private val database: AsteroidRadarDatabase) {
             } catch (e: Exception) {
                 Log.w("AsteroidsRepository", "refreshAsteroids: Exception = $e")
             }
+        }
+    }
+
+    companion object {
+        fun getCurrentDate() : String{
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            return current.format(formatter)
         }
     }
 

@@ -9,8 +9,8 @@ import androidx.room.*
 interface AsteroidDao{
      //When we return a livedata room will do the database query on the background for us,
      //and it will update the liveData any time new data is written to the table."watch for changes to the database and update the UI dynamically."
-     @Query("select * from DatabaseAsteroid")
-     fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
+     @Query("select * from DatabaseAsteroid where closeApproachDate >= :currentTime order by closeApproachDate")
+     fun getAsteroids(currentTime: String): LiveData<List<DatabaseAsteroid>>
 
     //insertAll() is an upsert, so don’t forget to pass it onConflict=OnConflictStrategy.REPLACE!
      // vararg: it will actually pass an array under the hood
