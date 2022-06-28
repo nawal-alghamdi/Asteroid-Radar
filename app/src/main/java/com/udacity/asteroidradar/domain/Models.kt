@@ -8,3 +8,13 @@ data class Asteroid(val id: Long, val codename: String, val closeApproachDate: S
                     val absoluteMagnitude: Double, val estimatedDiameter: Double,
                     val relativeVelocity: Double, val distanceFromEarth: Double,
                     val isPotentiallyHazardous: Boolean) : Parcelable
+
+
+data class ImageOfTheDay(
+    val id: String,
+    val date: String,
+    val explanation: String,
+    val mediaType: String,
+    val title: String,
+    val url: String
+)

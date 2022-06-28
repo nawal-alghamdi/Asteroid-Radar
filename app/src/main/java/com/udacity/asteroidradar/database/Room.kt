@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
-// Until now I only have one dao
 @Dao
 interface AsteroidDao{
      //When we return a livedata room will do the database query on the background for us,
@@ -18,9 +17,33 @@ interface AsteroidDao{
     fun insertAll(vararg asteroid: DatabaseAsteroid)
 }
 
-@Database(entities = [DatabaseAsteroid::class], version = 1)
-abstract class AsteroidRadarDatabase: RoomDatabase(){
+@Dao
+abstract class ImageOfTheDayDao {
+    @Transaction
+    open fun deleteAndInsert(imageOfTheDay: DatabaseImageOfTheDay) {
+        deleteAll()
+        insert(imageOfTheDay)
+
+    }
+
+    @Query("select * from DatabaseImageOfTheDay")
+    abstract fun getImageOfTheDay(): LiveData<DatabaseImageOfTheDay>
+
+    @Query("delete from DatabaseImageOfTheDay")
+    abstract fun deleteAll()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(imageOfTheDay: DatabaseImageOfTheDay)
+}
+
+@Database(
+    entities = [DatabaseAsteroid::class, DatabaseImageOfTheDay::class], version = 2,
+    autoMigrations = [AutoMigration(from = 1, to = 2)],
+    exportSchema = true
+)
+abstract class AsteroidRadarDatabase : RoomDatabase() {
     abstract val asteroidDao: AsteroidDao
+    abstract val imageOfTheDayDao: ImageOfTheDayDao
 }
 
 private lateinit var INSTANCE: AsteroidRadarDatabase

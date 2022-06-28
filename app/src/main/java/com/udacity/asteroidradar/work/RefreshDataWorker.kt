@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.udacity.asteroidradar.database.getDatabase
-import com.udacity.asteroidradar.repository.AsteroidsRepository
+import com.udacity.asteroidradar.repository.AsteroidRadarRepository
 import retrofit2.HttpException
 
 // pre-fetch data when the app is in the background
@@ -19,7 +19,7 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters):
     override suspend fun doWork(): Result {
         //suspend: so Our worker will run until doWork return a result
         val database = getDatabase(applicationContext)
-        val repository = AsteroidsRepository(database)
+        val repository = AsteroidRadarRepository(database)
 
         return try {
             repository.refreshAsteroids()

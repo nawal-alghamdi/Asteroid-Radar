@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.domain.Asteroid
-import com.udacity.asteroidradar.repository.AsteroidsRepository
+import com.udacity.asteroidradar.repository.AsteroidRadarRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -13,15 +13,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val database = getDatabase(application)
 
     // Creating the repository
-    private val asteroidRepository = AsteroidsRepository(database)
+    private val asteroidRadarRepository = AsteroidRadarRepository(database)
 
     init {
         viewModelScope.launch {
-            asteroidRepository.refreshAsteroids()
+            asteroidRadarRepository.refreshAsteroids()
+            asteroidRadarRepository.refreshImageOfTheDay()
         }
     }
 
-    val asteroidsList = asteroidRepository.asteroids
+    val asteroidsList = asteroidRadarRepository.asteroids
+    val imageOfTheDay = asteroidRadarRepository.imageOfTheDay
 
     // Internally, we use a MutableLiveData to handle navigation to the selected asteroid
     private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
