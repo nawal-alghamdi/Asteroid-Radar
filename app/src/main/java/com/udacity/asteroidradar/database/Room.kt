@@ -15,6 +15,9 @@ interface AsteroidDao{
      // vararg: it will actually pass an array under the hood
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroid: DatabaseAsteroid)
+
+    @Query("delete from DatabaseAsteroid where closeApproachDate < :currentTime")
+    fun deleteOldAsteroids(currentTime: String)
 }
 
 @Dao

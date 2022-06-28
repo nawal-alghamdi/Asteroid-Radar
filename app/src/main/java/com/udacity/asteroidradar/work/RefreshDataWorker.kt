@@ -22,7 +22,9 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters):
         val repository = AsteroidRadarRepository(database)
 
         return try {
+            repository.refreshImageOfTheDay()
             repository.refreshAsteroids()
+            repository.deleteOldAsteroids()
             Result.success()
         } catch (e: HttpException) {
             Result.retry()

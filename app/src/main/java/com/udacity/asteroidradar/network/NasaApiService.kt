@@ -26,7 +26,8 @@ private val retrofit = Retrofit.Builder()
 interface NasaApiService {
 
     @GET("neo/rest/v1/feed")
-    fun getAsteroidsAsync(@Query("api_key") key: String = BuildConfig.API_KEY): Deferred<JsonObject>
+    fun getAsteroidsAsync(@Query("api_key") key: String = BuildConfig.API_KEY,
+    @Query("start_date") startDate: String): Deferred<JsonObject>
 
     @GET("planetary/apod")
     fun getImageOfTheDayAsync(@Query("api_key") key: String = BuildConfig.API_KEY): Deferred<NetworkImageOfTheDay>
