@@ -1,7 +1,6 @@
 package com.udacity.asteroidradar
 
 import android.app.Application
-import android.os.Build
 import androidx.work.*
 import com.udacity.asteroidradar.work.RefreshDataWorker
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +28,6 @@ class AsteroidRadarApplication : Application() {
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresBatteryNotLow(true)
             .setRequiresCharging(true)
-            .setRequiresDeviceIdle(true)
             .build()
 
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)

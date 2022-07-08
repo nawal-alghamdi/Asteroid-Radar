@@ -49,5 +49,4 @@ fun DatabaseImageOfTheDay?.asDomainModel(): ImageOfTheDay? {
             url = it.url
         )
     }
-
 }

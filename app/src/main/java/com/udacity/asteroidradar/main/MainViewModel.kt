@@ -7,22 +7,32 @@ import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.repository.AsteroidRadarRepository
 import kotlinx.coroutines.launch
 
+enum class AsteroidsFilter {TODAY_ASTEROIDS, WEEK_ASTEROIDS, SAVED_ASTEROIDS}
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     // Creating the database singleton
     private val database = getDatabase(application)
-
     // Creating the repository
     private val asteroidRadarRepository = AsteroidRadarRepository(database)
 
+    private val mainAsteroidList: LiveData<List<Asteroid>> = asteroidRadarRepository.asteroids
+    private val asteroidsListBasedOnFilter = MutableLiveData<List<Asteroid>>()
+    val liveDataManager: MediatorLiveData<List<Asteroid>> = MediatorLiveData()
+
     init {
+        liveDataManager.addSource(mainAsteroidList) {
+            liveDataManager.value = it
+        }
+        liveDataManager.addSource(asteroidsListBasedOnFilter) {
+            liveDataManager.value = it
+        }
         viewModelScope.launch {
             asteroidRadarRepository.refreshAsteroids()
             asteroidRadarRepository.refreshImageOfTheDay()
         }
     }
 
-    val asteroidsList = asteroidRadarRepository.asteroids
     val imageOfTheDay = asteroidRadarRepository.imageOfTheDay
 
     // Internally, we use a MutableLiveData to handle navigation to the selected asteroid
@@ -41,6 +51,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun displayAsteroidDetailsComplete() {
         _navigateToSelectedAsteroid.value = null
+    }
+
+    fun showAsteroidsBasedOnFilters(asteroidsFilter: AsteroidsFilter) {
+        viewModelScope.launch {
+            if (asteroidsFilter == AsteroidsFilter.SAVED_ASTEROIDS) {
+                asteroidsListBasedOnFilter.postValue(asteroidRadarRepository.getAsteroidsByDate(null, null))
+            } else {
+                val startDate = AsteroidRadarRepository.getCurrentDate()
+                val endDate = when (asteroidsFilter) {
+                    AsteroidsFilter.TODAY_ASTEROIDS -> startDate
+                    else -> AsteroidRadarRepository.getDateAfterSixDays()
+                }
+                asteroidsListBasedOnFilter.postValue(
+                    asteroidRadarRepository.getAsteroidsByDate(
+                        startDate,
+                        endDate
+                    )
+                )
+            }
+        }
     }
 
     companion object {

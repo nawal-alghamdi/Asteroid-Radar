@@ -70,12 +70,30 @@ class AsteroidRadarRepository(private val database: AsteroidRadarDatabase) {
         }
     }
 
+    suspend fun getAsteroidsByDate(startDate: String?, endDate: String?): List<Asteroid> {
+         var asteroidList: List<Asteroid> = ArrayList()
+        withContext(Dispatchers.IO) {
+            asteroidList = if (startDate == null || endDate == null) {
+                database.asteroidDao.getSavedAsteroids().asDomainModel()
+            } else {
+                database.asteroidDao.getAsteroidsByDate(startDate, endDate).asDomainModel()
+            }
+        }
+        return asteroidList
+    }
+
     companion object {
         const val TAG = "AsteroidsRepository"
         fun getCurrentDate(): String {
             val current = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             return current.format(formatter)
+        }
+
+        fun getDateAfterSixDays(): String {
+            val current = LocalDateTime.now()
+            val newDate = current.plusDays(6)
+            return newDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         }
     }
 

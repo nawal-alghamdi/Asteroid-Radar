@@ -11,6 +11,12 @@ interface AsteroidDao{
      @Query("select * from DatabaseAsteroid where closeApproachDate >= :currentTime order by closeApproachDate")
      fun getAsteroids(currentTime: String): LiveData<List<DatabaseAsteroid>>
 
+    @Query("select * from DatabaseAsteroid where closeApproachDate >= :startDate and closeApproachDate <= :endDate order by closeApproachDate")
+    fun getAsteroidsByDate(startDate: String, endDate: String): List<DatabaseAsteroid>
+
+    @Query("select * from DatabaseAsteroid order by closeApproachDate")
+    fun getSavedAsteroids(): List<DatabaseAsteroid>
+
     //insertAll() is an upsert, so don’t forget to pass it onConflict=OnConflictStrategy.REPLACE!
      // vararg: it will actually pass an array under the hood
     @Insert(onConflict = OnConflictStrategy.REPLACE)

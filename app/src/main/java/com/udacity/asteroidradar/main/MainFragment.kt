@@ -20,7 +20,10 @@ class MainFragment : Fragment() {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onViewCreated()"
         }
-        ViewModelProvider(this, MainViewModel.Factory(activity.application)).get(MainViewModel::class.java)
+        ViewModelProvider(
+            this,
+            MainViewModel.Factory(activity.application)
+        ).get(MainViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -55,6 +58,14 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.showAsteroidsBasedOnFilters(
+            when (item.itemId) {
+                R.id.show_today_asteroids -> AsteroidsFilter.TODAY_ASTEROIDS
+                R.id.show_week_asteroids -> AsteroidsFilter.WEEK_ASTEROIDS
+                else -> AsteroidsFilter.SAVED_ASTEROIDS
+            }
+        )
         return true
     }
+
 }
