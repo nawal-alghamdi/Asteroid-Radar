@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.MediatorLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.domain.Asteroid
@@ -21,8 +22,8 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?) {
  * Binding adapter used to hide the spinner once data is available
  */
 @BindingAdapter("goneIfNotNull")
-fun goneIfNotNull(view: View, it: Any?) {
-    view.visibility = if (it != null) View.GONE else View.VISIBLE
+fun goneIfNotNull(view: View, it: MediatorLiveData<List<Asteroid>>?) {
+    view.visibility = if (it?.value?.isNotEmpty() == true) View.GONE else View.VISIBLE
 }
 
 @BindingAdapter("loadTheImage")
